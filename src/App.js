@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+
+// import config from './files/config.json';
+import shiftsData from './files/shifts.json';
+import employeesData from './files/employees.json';
+import rolesData from './files/roles.json';
+
+import WeekView from './Components/WeekView';
+
+const joinShiftsWithDetails = (shifts, employees, roles) =>
+  shifts.map((shift) => {
+    const employeeDetails = employees.find(
+      (emp) => emp.id === shift.employee_id,
+    );
+    const roleDetails = roles.find((role) => role.id === shift.role_id);
+
+    return {
+      ...shift,
+      employee: employeeDetails,
+      role: roleDetails,
+    };
+  });
+
+const shiftsJoined = joinShiftsWithDetails(
+  shiftsData,
+  employeesData,
+  rolesData,
+);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <WeekView shifts={shiftsJoined} roles={rolesData} />
     </div>
   );
 }
