@@ -31,7 +31,7 @@ export const WeekViewWrapperDiv = styled.div`
 export const RoleTimelineBody = styled.div`
   box-sizing: border-box;
   display: flex;
-  height: 100px;
+  height: ${({ noOfRows }) => noOfRows * 100}px;
   margin: 15px 0;
   position: relative;
 `;

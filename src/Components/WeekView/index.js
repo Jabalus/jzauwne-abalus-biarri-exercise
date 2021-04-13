@@ -41,92 +41,6 @@ const WeekView = ({ shifts, roles }) => {
 
   // experimental
 
-  const shiftByRolesGroup = roles.map((role) =>
-    shifts
-      .filter((shift) => shift.role_id === role.id)
-      .sort((shiftA, shiftB) =>
-        moment(shiftA.start_time).diff(shiftB.start_time),
-      )
-      .map((shift) => {
-        const width = moment
-          .duration(moment(shift.end_time).diff(moment(shift.start_time)))
-          .asHours();
-
-        const startX = moment
-          .duration(moment(shift.end_time).diff(earliestDate))
-          .asHours();
-
-        const endX = width + startX;
-        return { ...shift, aWidth: width, startX, endX };
-      }),
-  );
-
-  const dimensionsOnly = shiftByRolesGroup.map((arr) =>
-    arr.map((shift) => {
-      const width = moment
-        .duration(moment(shift.end_time).diff(moment(shift.start_time)))
-        .asHours();
-
-      const startX = moment
-        .duration(moment(shift.end_time).diff(earliestDate))
-        .asHours();
-
-      const endX = width + startX;
-      return { startX, endX };
-    }),
-  );
-
-  /*
-
-    hour px length = 100px
-  */
-
-  // const sortByNonOverlap = (arr) => {
-  //   const newArr = [];
-  //   arr.forEach((shift, i) => {
-  //     // if first time
-  //     if (i === 0) {
-  //       newArr.push([[shift]]);
-  //     } else {
-  //       // if non-first time
-  //       newArr.forEach((innerNewArr) => {
-  //         // check per array inside New Array
-  //         innerNewArr.forEach((shiftObj) => {
-  //           // check for overlap
-  //           if (shiftObj)
-  //         });
-  //       });
-  //     }
-  //   });
-  //   return [newArr];
-  // };
-
-  // const sortByNonOverlap = (arr) => {
-  //   const newArr = [];
-  //   arr.forEach((shift, i) => {
-  //     // if first time
-  //     if (i === 0) {
-  //       newArr.push([shift]);
-  //     } else {
-  //       newArr.forEach((innerArr, innerArrIdx) => {
-  //         innerArr.forEach((innerArrShift) => {
-  //           if (
-  //             !moment(shift.start_time).isBetween(
-  //               moment(innerArrShift.start_time),
-  //               moment(innerArrShift.end_time),
-  //             )
-  //           ) {
-  //             newArr[innerArrIdx].push([shift]);
-  //           }
-  //         });
-  //       });
-  //     }
-  //   });
-  //   return [newArr];
-  // };
-
-  console.log(dimensionsOnly);
-
   const setYStart = (arr) => {
     const newArr = [];
     arr.forEach((shift, i) => {
@@ -143,35 +57,70 @@ const WeekView = ({ shifts, roles }) => {
         if (overlaps.length === 0) {
           newArr.push({ ...shift, yStart: 0 });
         } else {
-          newArr.push({ ...shift, yStart: overlaps.length + 1 });
+          newArr.push({ ...shift, yStart: overlaps.length });
         }
       }
     });
+    return newArr;
   };
+
+  const shiftByRolesGroup = roles.map((role) =>
+    setYStart(
+      shifts
+        .filter((shift) => shift.role_id === role.id)
+        .sort((shiftA, shiftB) =>
+          moment(shiftA.start_time).diff(shiftB.start_time),
+        )
+        .map((shift) => {
+          const width = moment
+            .duration(moment(shift.end_time).diff(moment(shift.start_time)))
+            .asHours();
+
+          const startX = moment
+            .duration(moment(shift.end_time).diff(earliestDate))
+            .asHours();
+
+          const endX = width + startX;
+          return { ...shift, aWidth: width, startX, endX };
+        }),
+    ),
+  );
+
+  /*
+    hour px length = 100px
+  */
+
+  const getHighestYIndex = (arr) =>
+    arr.reduce((highest, currentValue) =>
+      currentValue.yStart > highest.yStart ? currentValue : highest,
+    ).yStart;
+
+  const shiftByRolesGroupYIndex = shiftByRolesGroup.map((arr) =>
+    getHighestYIndex(arr),
+  );
 
   return (
     <WeekViewWrapperDiv>
       <RoleRowContainer>
-        {roles.map(({ name }) => (
+        {roles.map(({ name }, i) => (
           <RoleRowHeader>
             <h2> {name}</h2>
+            <p>no of rows: {shiftByRolesGroupYIndex[i] + 1}</p>
           </RoleRowHeader>
         ))}
       </RoleRowContainer>
       <WeekViewContainerDiv>
         <Timeline start={earliestDate} end={latestDate} />
-        {shiftByRolesGroup.map((shiftByRole) => (
-          <RoleTimelineBody>
-            {shiftByRole.map(({ employee, startX, ...shift }) => {
-              setYStart(shiftByRole);
-              return (
-                <ShiftBox
-                  shift={shift}
-                  employee={employee}
-                  earliestDate={earliestDate}
-                />
-              );
-            })}
+        {shiftByRolesGroup.map((shiftByRole, i) => (
+          <RoleTimelineBody noOfRows={shiftByRolesGroupYIndex[i] + 1}>
+            {shiftByRole.map(({ employee, startX, yStart, ...shift }) => (
+              <ShiftBox
+                shift={shift}
+                employee={employee}
+                earliestDate={earliestDate}
+                yStart={yStart}
+              />
+            ))}
           </RoleTimelineBody>
         ))}
       </WeekViewContainerDiv>

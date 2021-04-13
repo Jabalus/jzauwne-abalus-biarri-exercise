@@ -42,4 +42,5 @@ export const ShiftBoxContainer = styled.div`
   border: 1px solid blue;
   position: absolute;
   left: ${({ start }) => `${start * 100}px`};
+  top: ${({ yIndex }) => `${yIndex * 100}px`};
 `;
