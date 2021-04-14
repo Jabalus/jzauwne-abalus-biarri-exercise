@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
-export const DisplayContainer = styled.div`
+export const TitleDiv = styled.div`
   display: flex;
-  justify-content: space-around;
-`;
-
-export const Eitems = styled.div`
-  border-top: 1px solid #ff0000;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  span {
+    font-size: 20px;
+  }
 `;

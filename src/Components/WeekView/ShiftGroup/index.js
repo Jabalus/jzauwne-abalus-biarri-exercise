@@ -8,21 +8,12 @@ import {
   RoleRowContainer,
   RoleTimelineBody,
   WeekViewContainerDiv,
-} from '../styles';
+} from './styles';
 
 import Timeline from '../Timeline';
+import { getMomentTz } from '../../../utils';
 
 const ShiftGroup = ({ shifts, roles, onEdit }) => {
-  // let dateMap = [];
-
-  // shifts.forEach((shift) => {
-  //   dateMap = [
-  //     ...dateMap,
-  //     new Date(shift.start_time),
-  //     new Date(shift.end_time),
-  //   ];
-  // });
-
   const dateMap = shifts.reduce(
     (arrOfDates, shift) => [
       ...arrOfDates,
@@ -32,8 +23,9 @@ const ShiftGroup = ({ shifts, roles, onEdit }) => {
     [],
   );
 
-  const latestDate = moment(new Date(Math.max(...dateMap)));
-  const earliestDate = moment(new Date(Math.min(...dateMap)));
+  // added tz to moment so position will adjust to time zone
+  const latestDate = getMomentTz(new Date(Math.max(...dateMap)));
+  const earliestDate = getMomentTz(new Date(Math.min(...dateMap)));
 
   // function to set the veritcal postion (what row) the shift should be on
   const setYStart = (arr) => {
@@ -108,7 +100,6 @@ const ShiftGroup = ({ shifts, roles, onEdit }) => {
     ),
   );
 
-  // console.log(shiftByRolesGroup);
   /*
     hour px length = 100px
   */
@@ -122,16 +113,6 @@ const ShiftGroup = ({ shifts, roles, onEdit }) => {
     getHighestYIndex(arr),
   );
 
-  // console.log(
-  //   shiftByRolesGroup.map((arr) =>
-  //     arr.map((shift) => ({
-  //       id: shift.id,
-  //       start_time: moment(shift.start_time).format('MMM DD, YYYY h:mm a'),
-  //       end_time: moment(shift.end_time).format('MMM DD, YYYY h:mm a'),
-  //     })),
-  //   ),
-  // );
-  console.log(shiftByRolesGroupYIndex);
   return (
     <>
       <RoleRowContainer>

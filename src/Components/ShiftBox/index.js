@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import { ShiftBoxContainer } from './styles';
+import { formatDate } from '../../utils';
 
 const ShiftBox = ({ shift, employee, start, width, yStart, color, edit }) => (
   <ShiftBoxContainer
@@ -14,8 +14,8 @@ const ShiftBox = ({ shift, employee, start, width, yStart, color, edit }) => (
   >
     <div>{shift.id}</div>
     {employee.first_name} {employee.last_name}
-    <div>{moment(shift.start_time).format('MMM D YY, h:mm a')}</div>
-    <div>{moment(shift.end_time).format('MMM D YY, h:mm a')}</div>
+    <div>{formatDate(shift.start_time)}</div>
+    <div>{formatDate(shift.end_time)}</div>
   </ShiftBoxContainer>
 );
 

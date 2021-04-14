@@ -1,13 +1,18 @@
 import React from 'react';
 
 // import config from './files/config.json';
+import { Typography } from 'antd';
 import shiftsData from './files/shifts.json';
 import employeesData from './files/employees.json';
 import rolesData from './files/roles.json';
 
 import WeekView from './Components/WeekView';
-
 import 'antd/dist/antd.css';
+
+import config from './files/config.json';
+import { TitleDiv } from './styles';
+
+const { Title, Text } = Typography;
 
 const joinShiftsWithDetails = (shifts, employees, roles) =>
   shifts.map((shift) => {
@@ -32,6 +37,14 @@ const shiftsJoined = joinShiftsWithDetails(
 function App() {
   return (
     <div>
+      <TitleDiv>
+        <Title level={1} strong>
+          {config.location} Roster Schedule
+        </Title>
+        <Text level={2} strong>
+          {config.timezone} timezone
+        </Text>
+      </TitleDiv>
       <WeekView shifts={shiftsJoined} roles={rolesData} />
     </div>
   );

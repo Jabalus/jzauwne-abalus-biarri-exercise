@@ -13,8 +13,6 @@ const tailLayout = {
 
 const EditShiftModal = ({ initialValue, visible, onCancel, onSave }) => {
   const onFinish = (values) => {
-    console.log('Success:', values);
-    console.log('initial', initialValue);
     onSave({
       employee_id: initialValue.employee_id,
       start_time: moment.utc(values.start_time).toISOString(),
@@ -27,14 +25,12 @@ const EditShiftModal = ({ initialValue, visible, onCancel, onSave }) => {
     });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
   return (
     <Modal
       title="Edit shift"
       visible={visible}
       onCancel={onCancel}
+      footer={null}
       destroyOnClose
     >
       <Form
@@ -42,7 +38,6 @@ const EditShiftModal = ({ initialValue, visible, onCancel, onSave }) => {
         name="basic"
         initialValues={initialValue}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item label="Employee Name">
           {initialValue && (
@@ -66,14 +61,14 @@ const EditShiftModal = ({ initialValue, visible, onCancel, onSave }) => {
           name="start_time"
           rules={[{ required: true }]}
         >
-          <DatePicker showTime format="DD/MM/YYYY hh:mm A" />
+          <DatePicker showTime format="MM/DD/YYYY hh:mm A" allowClear={false} />
         </Form.Item>
         <Form.Item
           label="End Time"
           name="end_time"
           rules={[{ required: true }]}
         >
-          <DatePicker showTime format="DD/MM/YYYY hh:mm A" />
+          <DatePicker showTime format="MM/DD/YYYY hh:mm A" allowClear={false} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>

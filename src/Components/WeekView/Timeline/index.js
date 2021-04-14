@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { ContainerDiv } from './styles';
 import DayView from '../../DayView';
 
@@ -19,6 +19,7 @@ const Timeline = ({ start, end }) => {
         <DayView
           key={moment(day).format('MMMM DD YYYY, dddd')}
           day={moment(day).format('MMMM DD YYYY,  dddd')}
+          tz={moment(day).tz('Australia/Perth').format('MMMM DD YYYY, dddd')}
         />
       ))}
     </ContainerDiv>
