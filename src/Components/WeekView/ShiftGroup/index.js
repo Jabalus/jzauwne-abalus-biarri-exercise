@@ -2,24 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import ShiftBox from '../../ShiftBox';
+
 import {
-  RoleRowContainer,
   RoleRowHeader,
+  RoleRowContainer,
   RoleTimelineBody,
   WeekViewContainerDiv,
-} from '../../ShiftBox/styles';
+} from '../styles';
+
 import Timeline from '../Timeline';
 
 const ShiftGroup = ({ shifts, roles, onEdit }) => {
-  let dateMap = [];
+  // let dateMap = [];
 
-  shifts.forEach((shift) => {
-    dateMap = [
-      ...dateMap,
+  // shifts.forEach((shift) => {
+  //   dateMap = [
+  //     ...dateMap,
+  //     new Date(shift.start_time),
+  //     new Date(shift.end_time),
+  //   ];
+  // });
+
+  const dateMap = shifts.reduce(
+    (arrOfDates, shift) => [
+      ...arrOfDates,
       new Date(shift.start_time),
       new Date(shift.end_time),
-    ];
-  });
+    ],
+    [],
+  );
 
   const latestDate = moment(new Date(Math.max(...dateMap)));
   const earliestDate = moment(new Date(Math.min(...dateMap)));
@@ -120,7 +131,7 @@ const ShiftGroup = ({ shifts, roles, onEdit }) => {
   //     })),
   //   ),
   // );
-
+  console.log(shiftByRolesGroupYIndex);
   return (
     <>
       <RoleRowContainer>
