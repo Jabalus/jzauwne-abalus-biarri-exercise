@@ -17,7 +17,7 @@ const DayView = ({ day }) => (
     <h3>{day}</h3>
     <HourContainerDiv>
       {hours.map((hour) => (
-        <HourDiv>{hour} </HourDiv>
+        <HourDiv key={hour}>{hour} </HourDiv>
       ))}
     </HourContainerDiv>
   </ContainerDiv>

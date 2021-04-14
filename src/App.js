@@ -7,6 +7,8 @@ import rolesData from './files/roles.json';
 
 import WeekView from './Components/WeekView';
 
+import 'antd/dist/antd.css';
+
 const joinShiftsWithDetails = (shifts, employees, roles) =>
   shifts.map((shift) => {
     const employeeDetails = employees.find(

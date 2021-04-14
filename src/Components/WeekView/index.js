@@ -11,9 +11,12 @@ import {
   RoleRowContainer,
 } from './styles';
 import ShiftBox from '../ShiftBox';
+import EditShiftModal from '../EditShiftModal';
 
 const WeekView = ({ shifts, roles }) => {
-  const [shiftsState] = useState(shifts);
+  const [shiftsState, setShiftState] = useState(shifts);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalInitialValue, setModalInitialValue] = useState();
 
   // const dateMap = shiftsState.map((e) => new Date(e.MeasureDate));
 
@@ -104,6 +107,7 @@ const WeekView = ({ shifts, roles }) => {
     ),
   );
 
+  console.log(shiftByRolesGroup);
   /*
     hour px length = 100px
   */
@@ -117,11 +121,41 @@ const WeekView = ({ shifts, roles }) => {
     getHighestYIndex(arr),
   );
 
+  const handleSave = (newData) => {
+    console.log('==============on handle save==============');
+    console.log('Data');
+    console.log(newData);
+
+    console.log('id');
+    console.log(newData.id);
+    console.log('Shift State');
+    console.log(shiftsState);
+
+    const filtered = shiftsState.filter((shift) => shift.id !== newData.id);
+
+    console.log('filtered');
+    console.log(filtered);
+
+    const newArr = [...filtered, newData];
+    console.log('New Shift State');
+    console.log(newArr);
+    console.log('==============end==============');
+    setShiftState(newArr);
+    setModalVisible(false);
+  };
+
   return (
     <WeekViewWrapperDiv>
+      <EditShiftModal
+        initialValue={modalInitialValue}
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSave={handleSave}
+      ></EditShiftModal>
       <RoleRowContainer>
         {roles.map(({ name }, i) => (
           <RoleRowHeader
+            key={name}
             noOfRows={shiftByRolesGroupYIndex[i] + 1}
             color={roles[i].background_colour}
           >
@@ -132,10 +166,14 @@ const WeekView = ({ shifts, roles }) => {
       <WeekViewContainerDiv>
         <Timeline start={earliestDate} end={latestDate} />
         {shiftByRolesGroup.map((shiftByRole, i) => (
-          <RoleTimelineBody noOfRows={shiftByRolesGroupYIndex[i] + 1}>
+          <RoleTimelineBody
+            key={`row-${roles[i].name}`}
+            noOfRows={shiftByRolesGroupYIndex[i] + 1}
+          >
             {shiftByRole.map(
               ({ employee, width, startX, yStart, ...shift }) => (
                 <ShiftBox
+                  key={shift.id}
                   shift={shift}
                   employee={employee}
                   earliestDate={earliestDate}
@@ -143,6 +181,15 @@ const WeekView = ({ shifts, roles }) => {
                   width={width}
                   start={startX}
                   color={roles[i].background_colour}
+                  edit={() => {
+                    setModalInitialValue({
+                      ...shift,
+                      start_time: moment(shift.start_time),
+                      end_time: moment(shift.end_time),
+                      employee,
+                    });
+                    setModalVisible(true);
+                  }}
                 />
               ),
             )}

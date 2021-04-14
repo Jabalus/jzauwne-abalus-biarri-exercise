@@ -43,8 +43,10 @@ export const ShiftBoxContainer = styled.div`
   position: absolute;
   left: ${({ start }) => `${start * 100}px`};
   top: ${({ yStart }) => `${yStart * 100}px`};
-  font-size: 14px;
+  font-size: 12px;
   height: 95px;
   background: ${({ color }) => color};
-  padding: 5px;
+  padding: 10px;
+
+  cursor: pointer;
 `;
