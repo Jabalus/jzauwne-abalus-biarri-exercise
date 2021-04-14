@@ -28,14 +28,22 @@ const WeekView = ({ shifts, roles }) => {
   });
 
   const latestDate = moment(new Date(Math.max(...dateMap)));
+
   const earliestDate = moment(new Date(Math.min(...dateMap)));
 
+  // function to set the veritcal postion (what row) the shift should be on
   const setYStart = (arr) => {
     const newArr = [];
     arr.forEach((shift, i) => {
       if (i === 0) {
         newArr.push({ ...shift, yStart: 0 });
       } else {
+        /* 
+            This block is used to check which indeces has overlaps 
+            if an index is available e.g. 0 has no over lap consume it and ignore over lap on other
+        */
+
+        // get all overlaps with element with assign (yStart)
         const overlaps = newArr
           .filter(
             (shiftPast) =>
@@ -47,17 +55,10 @@ const WeekView = ({ shifts, roles }) => {
         if (overlaps.length === 0) {
           newArr.push({ ...shift, yStart: 0 });
         } else {
-          // originally was:
-          // newArr.push({ ...shift, yStart: overlaps.length });
-
-          /* 
-            add condition here to check which indeces has overlaps 
-            if an index is available e.g. 0 has no over lap consume it and ignore over lap on other
-          */
-
-          // check which indeces are free based on greatest index available on takenIndeces
+          // get highest index of an overlap
           const highestTakenIndex = Math.max(...overlaps);
 
+          // check which indeces are free based on greatest index available on takenIndeces
           // look through 0 to highestTakenIndex to check which is the lowest index avaible to fill
 
           const availableIndeces = Array(highestTakenIndex + 1)
@@ -92,11 +93,13 @@ const WeekView = ({ shifts, roles }) => {
             .asHours();
 
           const startX = moment
-            .duration(moment(shift.end_time).diff(earliestDate))
+            .duration(
+              moment(shift.start_time).diff(earliestDate.startOf('day')),
+            )
             .asHours();
 
           const endX = width + startX;
-          return { ...shift, aWidth: width, startX, endX };
+          return { ...shift, width, startX, endX };
         }),
     ),
   );
@@ -118,9 +121,11 @@ const WeekView = ({ shifts, roles }) => {
     <WeekViewWrapperDiv>
       <RoleRowContainer>
         {roles.map(({ name }, i) => (
-          <RoleRowHeader noOfRows={shiftByRolesGroupYIndex[i] + 1}>
+          <RoleRowHeader
+            noOfRows={shiftByRolesGroupYIndex[i] + 1}
+            color={roles[i].background_colour}
+          >
             <h2> {name}</h2>
-            <p>no of rows: {shiftByRolesGroupYIndex[i] + 1}</p>
           </RoleRowHeader>
         ))}
       </RoleRowContainer>
@@ -128,14 +133,19 @@ const WeekView = ({ shifts, roles }) => {
         <Timeline start={earliestDate} end={latestDate} />
         {shiftByRolesGroup.map((shiftByRole, i) => (
           <RoleTimelineBody noOfRows={shiftByRolesGroupYIndex[i] + 1}>
-            {shiftByRole.map(({ employee, startX, yStart, ...shift }) => (
-              <ShiftBox
-                shift={shift}
-                employee={employee}
-                earliestDate={earliestDate}
-                yStart={yStart}
-              />
-            ))}
+            {shiftByRole.map(
+              ({ employee, width, startX, yStart, ...shift }) => (
+                <ShiftBox
+                  shift={shift}
+                  employee={employee}
+                  earliestDate={earliestDate}
+                  yStart={yStart}
+                  width={width}
+                  start={startX}
+                  color={roles[i].background_colour}
+                />
+              ),
+            )}
           </RoleTimelineBody>
         ))}
       </WeekViewContainerDiv>

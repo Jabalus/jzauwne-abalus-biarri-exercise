@@ -4,36 +4,31 @@ import moment from 'moment';
 
 import { ShiftBoxContainer } from './styles';
 
-const ShiftBox = ({ shift, employee, earliestDate, yStart }) => {
-  const width = moment
-    .duration(moment(shift.end_time).diff(moment(shift.start_time)))
-    .asHours();
+const ShiftBox = ({ shift, employee, start, width, yStart, color }) => (
+  <ShiftBoxContainer width={width} start={start} yStart={yStart} color={color}>
+    <div>
+      {yStart} {width}
+    </div>
+    {employee.first_name} {employee.last_name}
+    <div>{moment(shift.start_time).format('MMM D YY, h:mm a')}</div>
+    <div>{moment(shift.end_time).format('MMM D YY, h:mm a')}</div>
+  </ShiftBoxContainer>
+);
 
-  const start = moment
-    .duration(moment(shift.end_time).diff(earliestDate))
-    .asHours();
+// const width = moment
+//     .duration(moment(shift.end_time).diff(moment(shift.start_time)))
+//     .asHours();
 
-  return (
-    <ShiftBoxContainer width={width} start={start} yIndex={yStart}>
-      <div>{yStart}</div>
-      {employee.first_name} {employee.last_name}
-      <div>{moment(shift.start_time).format('MMM D YY, h:mm a')}</div>
-      <div>{moment(shift.end_time).format('MMM D YY, h:mm a')}</div>
-      <div>
-        {moment
-          .duration(moment(shift.end_time).diff(moment(shift.start_time)))
-          .asHours()}{' '}
-        hrs
-      </div>
-    </ShiftBoxContainer>
-  );
-};
-
+//   const start = moment
+//     .duration(moment(shift.end_time).diff(earliestDate))
+//     .asHours();
 ShiftBox.propTypes = {
   shift: PropTypes.object,
   employee: PropTypes.object,
-  earliestDate: PropTypes.instanceOf(moment),
+  start: PropTypes.number,
+  width: PropTypes.number,
   yStart: PropTypes.string,
+  color: PropTypes.string,
 };
 
 export default ShiftBox;

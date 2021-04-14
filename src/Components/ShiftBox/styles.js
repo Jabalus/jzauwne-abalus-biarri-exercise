@@ -39,9 +39,12 @@ export const RoleTimelineBody = styled.div`
 export const ShiftBoxContainer = styled.div`
   box-sizing: border-box;
   min-width: ${({ width }) => `${width * 100}px`};
-  border: 1px solid blue;
+
   position: absolute;
   left: ${({ start }) => `${start * 100}px`};
-  top: ${({ yIndex }) => `${yIndex * 100}px`};
+  top: ${({ yStart }) => `${yStart * 100}px`};
   font-size: 14px;
+  height: 95px;
+  background: ${({ color }) => color};
+  padding: 5px;
 `;

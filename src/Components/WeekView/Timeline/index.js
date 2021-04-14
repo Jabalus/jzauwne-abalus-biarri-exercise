@@ -17,8 +17,8 @@ const Timeline = ({ start, end }) => {
     <ContainerDiv>
       {days.map((day) => (
         <DayView
-          key={moment(day).format('MMMM Do YYYY')}
-          day={moment(day).format('MMMM Do YYYY')}
+          key={moment(day).format('MMMM DD YYYY, dddd')}
+          day={moment(day).format('MMMM DD YYYY,  dddd')}
         />
       ))}
     </ContainerDiv>

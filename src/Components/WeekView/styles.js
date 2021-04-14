@@ -12,8 +12,11 @@ export const RoleRowHeader = styled.div`
   box-sizing: border-box;
   width: 300px;
   height: ${({ noOfRows }) => noOfRows * 100}px;
-  border-right: 2px solid red;
+  padding: 15px;
   margin: 15px 0;
+  border-right: 5px solid #ffffff;
+  background: ${({ color }) => color};
+  text-align: center;
 `;
 
 export const RoleRowContainer = styled.div`
