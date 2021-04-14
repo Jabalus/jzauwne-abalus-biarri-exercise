@@ -30,34 +30,48 @@ const WeekView = ({ shifts, roles }) => {
   const latestDate = moment(new Date(Math.max(...dateMap)));
   const earliestDate = moment(new Date(Math.min(...dateMap)));
 
-  // working map
-  // const shiftByRolesGroup = roles.map((role) =>
-  //   shifts
-  //     .filter((shift) => shift.role_id === role.id)
-  //     .sort((shiftA, shiftB) =>
-  //       moment(shiftA.start_time).diff(shiftB.start_time),
-  //     ),
-  // );
-
-  // experimental
-
   const setYStart = (arr) => {
     const newArr = [];
     arr.forEach((shift, i) => {
       if (i === 0) {
         newArr.push({ ...shift, yStart: 0 });
       } else {
-        // newArr.push({ ...shift, yStart: 0 });
-
-        const overlaps = newArr.filter(
-          (shiftPast) =>
-            shift.startX >= shiftPast.startX && shift.startX <= shiftPast.endX,
-        );
+        const overlaps = newArr
+          .filter(
+            (shiftPast) =>
+              shift.startX >= shiftPast.startX &&
+              shift.startX <= shiftPast.endX,
+          )
+          .map((shiftOverlap) => shiftOverlap.yStart);
 
         if (overlaps.length === 0) {
           newArr.push({ ...shift, yStart: 0 });
         } else {
-          newArr.push({ ...shift, yStart: overlaps.length });
+          // originally was:
+          // newArr.push({ ...shift, yStart: overlaps.length });
+
+          /* 
+            add condition here to check which indeces has overlaps 
+            if an index is available e.g. 0 has no over lap consume it and ignore over lap on other
+          */
+
+          // check which indeces are free based on greatest index available on takenIndeces
+          const highestTakenIndex = Math.max(...overlaps);
+
+          // look through 0 to highestTakenIndex to check which is the lowest index avaible to fill
+
+          const availableIndeces = Array(highestTakenIndex + 1)
+            .fill()
+            .map((_, index) => index)
+            .filter((_, index) => !overlaps.includes(index));
+
+          newArr.push({
+            ...shift,
+            yStart:
+              availableIndeces.length > 0
+                ? availableIndeces[0]
+                : highestTakenIndex + 1,
+          });
         }
       }
     });
@@ -67,11 +81,12 @@ const WeekView = ({ shifts, roles }) => {
   const shiftByRolesGroup = roles.map((role) =>
     setYStart(
       shifts
-        .filter((shift) => shift.role_id === role.id)
+        .filter((shift) => shift.role_id === role.id) // filter by role
         .sort((shiftA, shiftB) =>
           moment(shiftA.start_time).diff(shiftB.start_time),
-        )
+        ) // order by date
         .map((shift) => {
+          // map shifts with dimension values
           const width = moment
             .duration(moment(shift.end_time).diff(moment(shift.start_time)))
             .asHours();
@@ -103,7 +118,7 @@ const WeekView = ({ shifts, roles }) => {
     <WeekViewWrapperDiv>
       <RoleRowContainer>
         {roles.map(({ name }, i) => (
-          <RoleRowHeader>
+          <RoleRowHeader noOfRows={shiftByRolesGroupYIndex[i] + 1}>
             <h2> {name}</h2>
             <p>no of rows: {shiftByRolesGroupYIndex[i] + 1}</p>
           </RoleRowHeader>
@@ -127,18 +142,6 @@ const WeekView = ({ shifts, roles }) => {
     </WeekViewWrapperDiv>
   );
 };
-
-/* 
-  {shiftsState.map(({ employee, ...shift }) => (
-    <div>
-      {employee.first_name} {employee.last_name}
-      <div>
-        {moment(shift.start_time).format('MMM DD YYYY, h:mm:ss a')}
-      </div>
-      <div>{moment(shift.end_time).format('MMM DD YYYY, h:mm:ss a')}</div>
-    </div>
-  ))}
-*/
 
 WeekView.propTypes = {
   shifts: PropTypes.array,

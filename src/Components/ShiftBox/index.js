@@ -15,8 +15,8 @@ const ShiftBox = ({ shift, employee, earliestDate, yStart }) => {
 
   return (
     <ShiftBoxContainer width={width} start={start} yIndex={yStart}>
+      <div>{yStart}</div>
       {employee.first_name} {employee.last_name}
-      {yStart}
       <div>{moment(shift.start_time).format('MMM D YY, h:mm a')}</div>
       <div>{moment(shift.end_time).format('MMM D YY, h:mm a')}</div>
       <div>

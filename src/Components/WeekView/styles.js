@@ -11,7 +11,7 @@ export const WeekViewContainerDiv = styled.div`
 export const RoleRowHeader = styled.div`
   box-sizing: border-box;
   width: 300px;
-  height: 100px;
+  height: ${({ noOfRows }) => noOfRows * 100}px;
   border-right: 2px solid red;
   margin: 15px 0;
 `;
