@@ -29,15 +29,17 @@ const WeekView = ({ shifts, roles }) => {
   };
 
   return (
-    <WeekViewWrapperDiv>
+    <>
       <EditShiftModal
         initialValue={modalInitialValue}
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         onSave={handleSave}
       ></EditShiftModal>
-      <ShiftGroup shifts={shiftsState} roles={roles} onEdit={handleEdit} />
-    </WeekViewWrapperDiv>
+      <WeekViewWrapperDiv>
+        <ShiftGroup shifts={shiftsState} roles={roles} onEdit={handleEdit} />
+      </WeekViewWrapperDiv>
+    </>
   );
 };
 

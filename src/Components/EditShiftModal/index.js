@@ -59,16 +59,48 @@ const EditShiftModal = ({ initialValue, visible, onCancel, onSave }) => {
         <Form.Item
           label="Start Time"
           name="start_time"
-          rules={[{ required: true }]}
+          rules={[
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('end_time').isAfter(value)) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error('start time must be earlier than end time'),
+                );
+              },
+            }),
+          ]}
         >
-          <DatePicker showTime format="MM/DD/YYYY hh:mm A" allowClear={false} />
+          <DatePicker
+            showTime
+            format="MM/DD/YYYY hh:mm A"
+            allowClear={false}
+            minuteStep={30}
+          />
         </Form.Item>
         <Form.Item
           label="End Time"
           name="end_time"
-          rules={[{ required: true }]}
+          rules={[
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || value.isAfter(getFieldValue('start_time'))) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error('start time must be earlier than end time'),
+                );
+              },
+            }),
+          ]}
         >
-          <DatePicker showTime format="MM/DD/YYYY hh:mm A" allowClear={false} />
+          <DatePicker
+            showTime
+            format="MM/DD/YYYY hh:mm A"
+            allowClear={false}
+            minuteStep={30}
+          />
         </Form.Item>
 
         <Form.Item {...tailLayout}>

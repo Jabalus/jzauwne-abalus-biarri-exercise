@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const ShiftBoxContainer = styled.div`
   box-sizing: border-box;
-  min-width: ${({ width }) => `${width * 100}px`};
+  width: ${({ width }) => `${width * 100}px`};
 
   position: absolute;
   left: ${({ start }) => `${start * 100}px`};
@@ -11,6 +11,6 @@ export const ShiftBoxContainer = styled.div`
   height: 95px;
   background: ${({ color }) => color};
   padding: 10px;
-
+  overflow: hidden;
   cursor: pointer;
 `;
